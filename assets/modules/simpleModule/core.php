@@ -3,7 +3,7 @@ if(IN_MANAGER_MODE!='true' && !$modx->hasPermission('exec_module')) die('ERROR')
 
 include_once(MODX_BASE_PATH . 'assets/snippets/DocLister/lib/DLTemplate.class.php');
 $DLTemplate = DLTemplate::getInstance($modx);
-$DLTemplate->setTemplatePath('assets/modules/exampleModule/templates/');
+$DLTemplate->setTemplatePath('assets/modules/simpleModule/templates/');
 $DLTemplate->setTemplateExtension('tpl');
 
 $bigAction = $_GET['a'];
