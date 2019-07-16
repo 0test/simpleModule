@@ -4,7 +4,7 @@
 		<meta content="text/html; charset=[+modx_charset+]" http-equiv="Content-Type">
 		<title>[+interface.store_name+]</title>
 		<link rel="stylesheet" type="text/css" href="[+manager_path+]/media/style/[+manager_theme+]/style.css"> 
-		<link rel="stylesheet" type="text/css" href="[+base_url+]assets/modules/exampleModule/css/main.css"> 
+		<link rel="stylesheet" type="text/css" href="[+base_url+]assets/modules/simpleModule/css/main.css"> 
 		<script type="text/javascript" src="[+manager_path+]/media/script/mootools/mootools.js" ></script>
 		<script type="text/javascript" src="[+manager_path+]/media/script/mootools/moodx.js"></script>
 		<script type="text/javascript" src="[+manager_path+]/media/script/tabpane.js"></script>
@@ -12,12 +12,12 @@
 	<body>
 		<h1>[+interface.store_name+]</h1>
 		<div id="actions">
-			<ul class="actionButtons">
-				<li id="Button1">
-					<a href="#" onclick="document.location.href=document.location.href;">[+interface.refresh+]</a>
-				</li>
-			</ul>
-		</div>	
+			<div class="btn-group">		
+				<a id="Button6" class="btn btn-secondary" href="javascript:;" onclick="document.location.href=document.location.href;">
+						<i class="fa fa-refresh"></i><span>Обновить</span>
+				</a>
+			</div>
+		</div>
 		<div class="sectionBody">
 			<p>[+interface.module_description+]</p>
 			<div class="tab-pane" id="tabPanel">
