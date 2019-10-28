@@ -17,14 +17,11 @@
 	<body>
 		<h1>[+interface.store_name+]</h1>
 		<div id="actions">
-			<ul class="actionButtons">		
-				<li>
-					<a href="index.php?a=112&id=[+moduleId+]" class="primary" id="save" onclick="postForm();return false;">[+interface.save+]</a>
-				</li>
-				<li>
-					<a href="index.php?a=112&id=[+moduleId+]">[+interface.close+]</a>
-				</li>				
-			</ul>
+			<div class="btn-group">		
+				<a href="index.php?a=112&id=[+moduleId+]" class="btn btn-success " id="save" onclick="postForm();return false;">[+interface.save+]</a>
+				<a class="btn btn-secondary " href="index.php?a=112&id=[+moduleId+]">[+interface.close+]</a>
+			
+			</div>
 		</div>	
 		<div class="sectionBody">
 			<div class="tab-pane" id="cePanel">

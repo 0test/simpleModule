@@ -6,9 +6,9 @@ $DLTemplate = DLTemplate::getInstance($modx);
 $DLTemplate->setTemplatePath('assets/modules/simpleModule/templates/');
 $DLTemplate->setTemplateExtension('tpl');
 
-$bigAction = $_GET['a'];
+$bigAction = $modx->db->escape( $_GET['a'] );
 $moduleId = $_GET['id'];
-$myUrl = 'index.php?a=112&id=' . $_GET['id'] . '&';
+$myUrl = 'index.php?a=112&id=' . $modx->db->escape( $_GET['id'] ) . '&';
 
 $FullTableName = $modx->getFullTableName('site_content');
 
