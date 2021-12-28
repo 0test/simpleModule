@@ -5,12 +5,13 @@ include_once(MODX_BASE_PATH . 'assets/snippets/DocLister/lib/DLTemplate.class.ph
 $DLTemplate = DLTemplate::getInstance($modx);
 $DLTemplate->setTemplatePath('assets/modules/simpleModule/templates/');
 $DLTemplate->setTemplateExtension('tpl');
-
+$editRowTpl = '@FILE: editRowTpl';
+$itemTpl = '@FILE: itemTpl';
 $bigAction = $modx->db->escape( $_GET['a'] );
-$moduleId = $_GET['id'];
+$moduleId = (int)$_GET['id'];
 $myUrl = 'index.php?a=112&id=' . $modx->db->escape( $_GET['id'] ) . '&';
 
-$FullTableName = $modx->getFullTableName('site_content');
+$SiteContentTable = $modx->getFullTableName('site_content');
 
 $lang = $modx->config['manager_language'];
 if (file_exists( dirname(__FILE__) .  '/lang/'.$lang.'.php')){
@@ -27,40 +28,36 @@ $data = array (
 	'moduleId' => $moduleId,
 	'interface' => $interface,
 );
-
+$act = !isset($_REQUEST['action']) ? 'default' : $modx->db->escape($_REQUEST['action']) ;
+$data['work'] = '';
+switch($act){
+	case 'default':
+		$section = $params['sectionId'];
+		$result = $modx->db->select('id,pagetitle,introtext', $SiteContentTable, 'parent='.$section, '', 30);
 		
-switch($_REQUEST['action']){
-	default:	// Действия при загрузке модуля
-		$section=$params['sectionId'];	// Получаем из конфига id раздела
-		$result = $modx->db->select('id,pagetitle,introtext', $FullTableName, 'parent='.$section, '', 30);
-		if($modx->db->getRecordCount($result)>= 1){
+		if($modx->db->getRecordCount($result) >= 1){
 			while($row = $modx->db->getRow( $result )){
-				if($class){$class="gridAltItem";}else{$class="gridItem";}		
-				$data['work'] .='<tr class="'.$class.'">';
-				$data['work'].='<td >'.$row["id"].'</td>';
-				$data['work'] .='<td>'.$row["pagetitle"].'</td>';
-				$data['work'] .='<td >'.$row["introtext"].'</td>';
-				$data['work'] .='<td ><a href="index.php?&a=' . $bigAction. '&id='.$moduleId . '&editDoc='. $row['id'].'&action=edit" data-id="'.$row["id"].'">'.$interface['edit'].'</a></td>';
-				$data['work'] .='</tr>';
+				$data['work'] .= $DLTemplate->parseChunk($itemTpl, [
+					'id' => $row["id"],
+					'pagetitle' => $row["pagetitle"],
+					'introtext' => $row["introtext"],
+					'moduleId' => $moduleId,
+					'bigAction' => $bigAction,
+					'interface' => $interface,
+				], true);
 			}
-		}
-		else{
-			$data['work'] = '';
-		}
-		$tpl = '@FILE: main';	
-		
-		
 
-		
+		}
+		$tpl = '@FILE: mainPage';
 	break;
-		
+
 	case 'edit':
 		if($_POST){
 			$fields = array(
 				"pagetitle" => $modx->db->escape($_POST["pagetitle"]),
 				"introtext" => $modx->db->escape($_POST["introtext"])
 			);
-			$result = $modx->db->update($fields, $FullTableName, "id=" . $modx->db->escape( $_GET['editDoc']) );
+			$result = $modx->db->update($fields, $SiteContentTable, "id=" . $modx->db->escape( $_GET['editDoc']) );
 			if($result){
 				$data['work'] =  $interface['save_success'];
 			}
@@ -69,24 +66,21 @@ switch($_REQUEST['action']){
 			}
 		}
 		else{
-			$result = $modx->db->select('id,pagetitle,introtext', $FullTableName, 'id='.$modx->db->escape($_GET['editDoc']));
+			$result = $modx->db->select('id,pagetitle,introtext', $SiteContentTable, 'id='.$modx->db->escape($_GET['editDoc']));
 			if($modx->db->getRecordCount($result)>= 1){
 				while($row = $modx->db->getRow( $result )){
-					if($class){$class="gridAltItem";}else{$class="gridItem";}			
-					$data['work'] .='<tr class="'.$class.'">';
-					$data['work'] .='<td>'.$interface['header'] .'</td>';
-					$data['work'] .='<td><input name="pagetitle" type="text" maxlength="255" value="'.$row["pagetitle"].'" class="inputBox" onchange="documentDirty=true;" spellcheck="true"></td>';
-					$data['work'] .='</tr>';
-					$data['work'] .='<tr class="'.$class.'">';
-					$data['work'] .='<td>'.$interface['table_header2'] .'</td>';
-					$data['work'] .='<td><textarea id="introtext" name="introtext" class="inputBox" rows="3" cols="" onchange="documentDirty=true;">'.$row["introtext"].'</textarea></td>';				
-					$data['work'] .='</tr>';
+					$data['work'] .= $DLTemplate->parseChunk($editRowTpl, [
+						'id' => $row["id"],
+						'pagetitle' => $row["pagetitle"],
+						'introtext' => $row["introtext"],
+						'interface' => $interface,
+					], true);
 				}
 			}
 		}
-		$tpl = '@FILE: edit';
+		$tpl = '@FILE: editPage';
 	break;
 }
-$out = $DLTemplate->parseChunk($tpl,$data,true);
+$out = $DLTemplate->parseChunk($tpl, $data, true);
 echo $out;
 ?>
